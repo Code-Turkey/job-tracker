@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Job Tracker</h1>
+
+<h2>Add Job</h2>
+
+<input id="company" placeholder="Company">
+<input id="position" placeholder="Position">
+
+<select id="status">
+    <option value="applied">Applied</option>
+    <option value="interviewing">Interviewing</option>
+    <option value="rejected">Rejected</option>
+    <option value="offer">Offer</option>
+</select>
+
+<button onclick="addJob()">Add Job</button>
+
+<br><br>
+<body id="button_prompt">Filter by:</body>
+<select onchange="loadJobs()" id="filter">
+    <option value="all">All</option>
+    <option value="applied">Applied</option>
+    <option value="interviewing">Interviewing</option>
+    <option value="rejected">Rejected</option>
+    <option value="offer">Offer</option>
+</select>
+
+<body id="button_prompt">Sort by:</body>
+<select onchange="loadJobs()" id="sorter">
+    <option value="date_newest">Date Newest</option>
+    <option value="date_oldest">Date Oldest</option>
+</select>
+
+<h2>Jobs</h2>
+<table>
+    <tr>
+        <th id="company_col">Company</th>
+        <th id="position_col">Position</th>
+        <th id="status_col">Status</th>
+        <th id="date_col">Date Applied</th>
+        <th id="edit_col">Edit</th>
+    </tr>
+    <tbody id="jobList"></tbody>
+</table>
+
+<script>
+console.log("JS is running");
+const API_URL = "http://127.0.0.1:8000";
+
+// Load all jobs from backend
+async function loadJobs() {
+
+    const filter = document.getElementById("filter").value;
+    const field = document.getElementById("sorter").value;
+
+    let url = `${API_URL}/jobs/${filter}/${field}`;
+
+    const res = await fetch(url);
+    const jobs = await res.json();
+
+    const table = document.getElementById("jobList");
+    table.innerHTML = ""
+
+    jobs.forEach(job => {
+        const row = document.createElement("tr");
+        const dateOnly = new Date(job.date).toLocaleDateString("en-US");
+        row.innerHTML = `
+            <td>${job.company}</td>
+            <td>${job.position}</td>
+            <td>${job.status}</td>
+            <td>${dateOnly}</td>
+            <td>
+            <button onclick="deleteJob(${job.id})">Delete</button>
+            <button onclick="editJob(${job.id}, this)">Edit</button>
+            </td>
+        `;
+
+        table.appendChild(row);
+    });
+}
+
+
+async function addJob() {
+    const company = document.getElementById("company").value;
+    const position = document.getElementById("position").value;
+    const status = document.getElementById("status").value;
+
+    await fetch(`${API_URL}/jobs`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ company, position, status })
+    });
+
+    loadJobs(); // refresh list after adding
+}
+
+
+async function deleteJob(id) {
+    await fetch(`${API_URL}/jobs/delete/${id}`, {
+        method: "DELETE"
+    });
+
+    loadJobs(); // refresh list after deleting
+}
+
+
+async function editJob(id, button) {
+    const row = button.parentElement.parentElement;
+
+    const company = row.children[0].innerText;
+    const position = row.children[1].innerText;
+    const status = row.children[2].innerText;
+    const date = row.children[3].innerText;
+
+    row.innerHTML = `
+        <td id=company_col><input value="${company}" id="company-${id}"></td>
+        <td id=position_col><input value="${position}" id="position-${id}"></td>
+        <td id=status_col>
+            <select id="status-${id}">
+                <option value="applied">Applied</option>
+                <option value="interviewing">Interviewing</option>
+                <option value="offer">Offer</option>
+            </select>
+        </td>
+        <td id=date_col>${date}</td>
+        <td id=edit_col>
+            <button onclick="saveEdit(${id}, this)">Save</button>
+        </td>
+    `;
+
+    // set correct selected value
+    document.getElementById(`status-${id}`).value = status;
+}
+
+
+async function saveEdit(id, button) {
+    const updatedJob = {
+        company: document.getElementById(`company-${id}`).value,
+        position: document.getElementById(`position-${id}`).value,
+        status: document.getElementById(`status-${id}`).value
+    };
+
+    const res = await fetch(`${API_URL}/jobs/edit/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedJob)
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    loadJobs(); // refresh table
+}
+
+
+async function sortJobs() {
+
+}
+
+
+loadJobs();
+
+
+
+</script>
+
+</body>
+</html>

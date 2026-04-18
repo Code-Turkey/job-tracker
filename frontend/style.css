@@ -1,0 +1,93 @@
+body {
+    font-family: "Lucida Console", "Courier New", monospace;
+    text-align: center;
+
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #111a31, #3a5072);
+}
+
+h1 {
+    color: #f8fafc;
+    font-weight: 1000;
+    font-size: 40px;
+}
+
+h2 {
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+th {
+    height: 25px;
+    color: #e2e8f0;
+    background-color: rgba(15, 23, 42, 0.6);
+}
+
+td {
+    height: 40px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+table {
+    width: 1200px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    text-align: left;
+    text-indent: 10px
+}
+
+th, td {
+    border: 1px solid;
+    border-color: black;
+    
+}
+
+tr:hover {
+    background-color: rgba(148, 163, 184, 0.08);
+}
+
+button {
+    background-color: #495d7d;
+    color: white;
+    border: 1px;
+    border-radius: 2px;
+    height: 100%;
+}
+
+button:hover {
+    background-color: #2563eb;
+
+}
+
+#button_prompt {
+    color: #f8fafc;
+}
+
+#company_col {
+    width: 200px;
+}
+
+#position_col {
+    width: 200px;
+}
+
+#status_col {
+    width: 100px;
+}
+
+#date_col {
+    width: 100px
+}
+
+#edit_col {
+    width: 120px;
+}
+
+
