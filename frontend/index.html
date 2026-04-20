@@ -23,7 +23,7 @@
 <button onclick="addJob()">Add Job</button>
 
 <br><br>
-<body id="button_prompt">Filter by:</body>
+<span id="button_prompt">Filter by:</span>
 <select onchange="loadJobs()" id="filter">
     <option value="all">All</option>
     <option value="applied">Applied</option>
@@ -32,7 +32,7 @@
     <option value="offer">Offer</option>
 </select>
 
-<body id="button_prompt">Sort by:</body>
+<span id="button_prompt">Sort by:</span>
 <select onchange="loadJobs()" id="sorter">
     <option value="date_newest">Date Newest</option>
     <option value="date_oldest">Date Oldest</option>
@@ -52,9 +52,11 @@
 
 <script>
 console.log("JS is running");
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://job-tracker-00yy.onrender.com";
 
-// Load all jobs from backend
+
+
+
 async function loadJobs() {
 
     const filter = document.getElementById("filter").value;
